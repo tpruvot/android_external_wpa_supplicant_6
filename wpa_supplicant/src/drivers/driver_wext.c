@@ -993,12 +993,26 @@ static void wpa_driver_wext_finish_drv_init(struct wpa_driver_wext_data *drv)
 			 * needed at least some drivers that load firmware etc.
 			 * when the interface is set up.
 			 */
+#ifndef ANDROID
 			wpa_printf(MSG_DEBUG, "Interface %s set UP - waiting "
 				   "a second for the driver to complete "
 				   "initialization", drv->ifname);
 			sleep(1);
+#endif
 		}
 	}
+
+	/*
+	 * Wifi interface will be set up in Wifi Service before supplicant is
+	 * launched, keep the same waiting time (400ms) as it's done in supplicant
+	 * to wait for loading fireware etc.
+	 */
+#ifdef ANDROID
+	wpa_printf(MSG_DEBUG, "Interface %s set UP - waiting "
+	                      "400ms for the driver to complete "
+	                      "initialization", drv->ifname);
+	os_sleep(0, WPA_DRIVER_WEXT_WAIT_US);
+#endif
 
 	/*
 	 * Make sure that the driver does not have any obsolete PMKID entries.
