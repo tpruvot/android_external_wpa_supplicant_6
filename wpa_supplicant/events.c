@@ -561,6 +561,12 @@ wpa_supplicant_select_bss_non_wpa(struct wpa_supplicant *wpa_s,
 				continue;
 			}
 
+#ifdef CONFIG_WPS
+			if (wpas_wps_ssid_bss_match(wpa_s, ssid, bss) == 0) {
+				continue;
+			}
+#endif /* CONFIG_WPS */
+
 			if (!(ssid->key_mgmt & WPA_KEY_MGMT_NONE) &&
 			    !(ssid->key_mgmt & WPA_KEY_MGMT_WPS) &&
 			    !(ssid->key_mgmt & WPA_KEY_MGMT_IEEE8021X_NO_WPA))

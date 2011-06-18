@@ -29,8 +29,11 @@
 #include "wpa.h"
 #include "wps_supplicant.h"
 
-
+#ifdef ANDROID
+#define WPS_PIN_SCAN_IGNORE_SEL_REG 10
+#else
 #define WPS_PIN_SCAN_IGNORE_SEL_REG 3
+#endif
 
 static void wpas_wps_timeout(void *eloop_ctx, void *timeout_ctx);
 static void wpas_clear_wps(struct wpa_supplicant *wpa_s);
@@ -462,10 +465,56 @@ static void wpas_clear_wps(struct wpa_supplicant *wpa_s)
 
 static void wpas_wps_timeout(void *eloop_ctx, void *timeout_ctx)
 {
+	struct wpa_ssid *ssid;
+	int disabled;
 	struct wpa_supplicant *wpa_s = eloop_ctx;
-	wpa_printf(MSG_INFO, WPS_EVENT_TIMEOUT "Requested operation timed "
-		   "out");
+
+	/*
+	 * Check if WPS network has been disabled, disabled will be set to
+	 * 1 if there is no WPS network is existing now.
+	 */
+	disabled = 1;
+	ssid = wpa_s->conf->ssid;
+	while (ssid) {
+		if (ssid->key_mgmt & WPA_KEY_MGMT_WPS) {
+			disabled = ssid->disabled;
+			break;
+		}
+		ssid = ssid->next;
+	}
+
+	if (!disabled) {
+		wpa_msg(wpa_s, MSG_INFO, WPS_EVENT_TIMEOUT "Requested operation "
+		                                           "timed out");
+	} else {
+		wpa_printf(MSG_INFO, WPS_EVENT_TIMEOUT "Requested operation "
+		                                       "timed out");
+	}
+
 	wpas_clear_wps(wpa_s);
+
+#ifdef ANDROID
+	wpas_wps_enable_all_networks(wpa_s, !disabled);
+#endif /* ANDROID */
+}
+
+void wpas_wps_enable_all_networks(struct wpa_supplicant *wpa_s, Boolean connect)
+{
+	struct wpa_ssid *ssid;
+	ssid = wpa_s->conf->ssid;
+
+	if (ssid) {
+		while (ssid) {
+			ssid->disabled = 0;
+			ssid = ssid->next;
+		}
+
+		if (connect) {
+			wpa_s->reassociate = 1;
+			wpa_s->prev_scan_ssid = BROADCAST_SSID_SCAN;
+			wpa_supplicant_req_scan(wpa_s, 2, 0);
+		}
+	}
 }
 
 
