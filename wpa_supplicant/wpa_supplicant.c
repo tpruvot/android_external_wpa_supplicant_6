@@ -1194,7 +1194,7 @@ void wpa_supplicant_associate(struct wpa_supplicant *wpa_s,
 		if (assoc_failed) {
 			/* give IBSS a bit more time */
  			timeout = ssid->mode ? 10 : 5;
-		} else if (wpa_s->conf->ap_scan == 1) {
+		} else if (wpa_s->conf->ap_scan == 1 || wpa_s->conf->ap_scan == 2) {
 			/* give IBSS a bit more time */
  			timeout = ssid->mode ? 20 : 10;
 		}
