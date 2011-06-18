@@ -161,6 +161,7 @@ static void wpa_supplicant_scan(void *eloop_ctx, void *timeout_ctx)
 			/* Start from the beginning of the SSID list. */
 			wpa_s->prev_scan_ssid = BROADCAST_SSID_SCAN;
 		}
+		wpa_s->conf->ap_scan = 1;
 		wpa_supplicant_associate(wpa_s, NULL, ssid);
 		return;
 	}

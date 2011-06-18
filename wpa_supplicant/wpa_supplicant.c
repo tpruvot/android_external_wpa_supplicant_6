@@ -953,7 +953,8 @@ void wpa_supplicant_associate(struct wpa_supplicant *wpa_s,
 			ie ? wpa_ssid_txt(ie + 2, ie[1]) : "", bss->freq);
 		os_memset(wpa_s->bssid, 0, ETH_ALEN);
 		os_memcpy(wpa_s->pending_bssid, bss->bssid, ETH_ALEN);
-		wpa_s->link_speed = wpa_scan_get_max_rate(bss) * 500000;
+		//wpa_s->link_speed = wpa_scan_get_max_rate(bss) * 500000;
+		wpa_s->link_speed = bss->maxrate * 500000;
 		wpa_s->rssi = bss->level;
 #ifdef CONFIG_IEEE80211R
 		ie = wpa_scan_get_ie(bss, WLAN_EID_MOBILITY_DOMAIN);

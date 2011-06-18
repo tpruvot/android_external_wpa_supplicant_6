@@ -110,6 +110,7 @@ struct wpa_scan_res {
 	int qual;
 	int noise;
 	int level;
+	int maxrate;
 	u64 tsf;
 	size_t ie_len;
 	/* followed by ie_len octets of IEs */

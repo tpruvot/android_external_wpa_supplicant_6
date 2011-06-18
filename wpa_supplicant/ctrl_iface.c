@@ -870,7 +870,7 @@ static int wpa_supplicant_ctrl_iface_select_network(
 		return -1;
 	}
 
-	if (ssid != wpa_s->current_ssid && wpa_s->current_ssid)
+	if (ssid != wpa_s->current_ssid)
 		wpa_supplicant_disassociate(wpa_s, WLAN_REASON_DEAUTH_LEAVING);
 
 	/* Mark all other networks disabled and trigger reassociation */
@@ -881,6 +881,17 @@ static int wpa_supplicant_ctrl_iface_select_network(
 	}
 	wpa_s->reassociate = 1;
 	wpa_s->prev_scan_ssid = BROADCAST_SSID_SCAN;
+
+	ssid = wpa_config_get_network(wpa_s->conf, id);
+	if (ssid->mode == 1) {
+		if (wpa_s->conf->ap_scan != 2) {
+			wpa_s->conf->ap_scan = 2;
+		}
+		if (wpa_s->scan_req == 2) {
+			wpa_s->scan_req = 0;
+		}
+	}
+
 	wpa_supplicant_req_scan(wpa_s, 0, 0);
 
 	return 0;

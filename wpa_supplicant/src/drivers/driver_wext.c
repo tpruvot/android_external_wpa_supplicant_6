@@ -1582,6 +1582,7 @@ static void wpa_driver_wext_add_scan_entry(struct wpa_scan_results *res,
 	if (data->ie)
 		os_memcpy(pos, data->ie, data->ie_len);
 
+	r->maxrate = data->maxrate;
 	tmp = os_realloc(res->res,
 			 (res->num + 1) * sizeof(struct wpa_scan_res *));
 	if (tmp == NULL) {
@@ -1701,6 +1702,26 @@ struct wpa_scan_results * wpa_driver_wext_get_scan_results(void *priv)
 		   (unsigned long) len, (unsigned long) res->num);
 
 	return res;
+}
+
+
+int wpa_driver_wext_get_max_rate(void *priv)
+{
+	struct wpa_driver_wext_data *drv = priv;
+	struct iwreq iwr;
+	int max_rate = 0;
+
+	os_memset(&iwr, 0, sizeof(iwr));
+	os_strncpy(iwr.ifr_name, drv->ifname, IFNAMSIZ);
+
+	if (ioctl(drv->ioctl_sock, SIOCGIWRATE, &iwr) < 0) {
+		perror("ioctl[SIOCGIWRATE]");
+		return 0;
+	}
+
+	max_rate = iwr.u.bitrate.value;
+	wpa_printf(MSG_DEBUG, "max_rate is %d\n", max_rate);
+	return max_rate;
 }
 
 

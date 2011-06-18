@@ -433,6 +433,11 @@ wpa_supplicant_select_bss_wpa(struct wpa_supplicant *wpa_s,
 				continue;
 			}
 
+			if (ssid->mode == 1) {
+				wpa_printf(MSG_DEBUG, "   skip - ad-hoc");
+				continue;
+			}
+
 #ifdef CONFIG_WPS
 			if (ssid->ssid_len == 0 &&
 			    wpas_wps_ssid_wildcard_ok(wpa_s, ssid, bss))
@@ -523,6 +528,10 @@ wpa_supplicant_select_bss_non_wpa(struct wpa_supplicant *wpa_s,
 				continue;
 			}
 
+			if (ssid->mode == 1) {
+				continue;
+			}
+
 #ifdef CONFIG_WPS
 			if (ssid->key_mgmt & WPA_KEY_MGMT_WPS) {
 				/* Only allow wildcard SSID match if an AP
@@ -578,10 +587,9 @@ wpa_supplicant_select_bss_non_wpa(struct wpa_supplicant *wpa_s,
 				continue;
 			}
 
-			if ((bss->caps & IEEE80211_CAP_IBSS) &&
-					ssid->mode != IEEE80211_MODE_IBSS) {
+			if (bss->caps & IEEE80211_CAP_IBSS) {
 				wpa_printf(MSG_DEBUG, "   skip - "
-					   "IBSS (adhoc) network mode mismatch");
+					   "IBSS (adhoc) network");
 				continue;
 			}
 
