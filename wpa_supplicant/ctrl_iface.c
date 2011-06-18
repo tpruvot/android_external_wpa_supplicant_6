@@ -1016,6 +1016,15 @@ static int wpa_supplicant_ctrl_iface_add_network(
 	return ret;
 }
 
+static int wpa_supplicant_ctrl_iface_set_scan_interval(
+	struct wpa_supplicant *wpa_s, char *cmd)
+{
+	int scan_interval;
+	scan_interval = atoi(cmd);
+	wpa_printf(MSG_DEBUG, "CTRL_IFACE: SCAN_INTERVAL =%d", scan_interval);
+	wpa_s->scan_interval = scan_interval;
+	return 0;
+}
 
 static int wpa_supplicant_ctrl_iface_remove_network(
 	struct wpa_supplicant *wpa_s, char *cmd)
@@ -1786,6 +1795,9 @@ char * wpa_supplicant_ctrl_iface_process(struct wpa_supplicant *wpa_s,
 	} else if (os_strcmp(buf, "SCAN_RESULTS") == 0) {
 		reply_len = wpa_supplicant_ctrl_iface_scan_results(
 			wpa_s, reply, reply_size);
+	} else if (os_strncmp(buf, "SCAN_INTERVAL ",14) == 0) {
+		if (wpa_supplicant_ctrl_iface_set_scan_interval(wpa_s, buf + 14))
+			reply_len = -1;
 	} else if (os_strncmp(buf, "SELECT_NETWORK ", 15) == 0) {
 		if (wpa_supplicant_ctrl_iface_select_network(wpa_s, buf + 15))
 			reply_len = -1;
