@@ -45,8 +45,8 @@ struct wpa_driver_wext_data {
 	int scan_complete_events;
 #ifdef ANDROID
 	int errors;
-	int driver_is_started;
 	int skip_disconnect;
+        int driver_is_started;
 #endif
 };
 

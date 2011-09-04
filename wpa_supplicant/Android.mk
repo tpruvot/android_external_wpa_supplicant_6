@@ -639,6 +639,7 @@ OBJS_h += hostapd/wpa.c
 OBJS_h += hostapd/wpa_auth_ie.c
 ifdef CONFIG_IEEE80211R
 OBJS_h += hostapd/wpa_ft.c
+NEED_AES=y
 endif
 ifdef CONFIG_PEERKEY
 OBJS_h += hostapd/peerkey.c

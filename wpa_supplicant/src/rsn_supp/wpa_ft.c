@@ -18,7 +18,7 @@
 #include "wpa.h"
 #include "wpa_i.h"
 #include "wpa_ie.h"
-#include "aes_wrap.h"
+#include "../crypto/aes_wrap.h"
 #include "ieee802_11_defs.h"
 
 #ifdef CONFIG_IEEE80211R

@@ -537,21 +537,13 @@ static void wpa_driver_wext_event_wireless(struct wpa_driver_wext_data *drv,
 				drv->assoc_req_ies = NULL;
 				os_free(drv->assoc_resp_ies);
 				drv->assoc_resp_ies = NULL;
-#ifdef ANDROID
-				if (!drv->skip_disconnect) {
-					drv->skip_disconnect = 1;
-#endif
-					wpa_supplicant_event(ctx, EVENT_DISASSOC,
+				wpa_supplicant_event(ctx, EVENT_DISASSOC,
 						     NULL);
 #ifdef ANDROID
 					wpa_driver_wext_disconnect(drv);
-				}
 #endif
 			
 			} else {
-#ifdef ANDROID
-				drv->skip_disconnect = 0;
-#endif
 				wpa_driver_wext_event_assoc_ies(drv);
 				wpa_supplicant_event(ctx, EVENT_ASSOC, NULL);
 			}
