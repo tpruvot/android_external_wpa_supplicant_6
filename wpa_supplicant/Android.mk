@@ -655,7 +655,7 @@ endif
 
 ifdef CONFIG_PCSC
 # PC/SC interface for smartcards (USIM, GSM SIM)
-L_CFLAGS += -DPCSC_FUNCS -I/usr/include/PCSC
+L_CFLAGS += -DPCSC_FUNCS -I/usr/include/PCSC -I$(LOCAL_PATH)/../../pcsc/includes
 OBJS += src/utils/pcsc_funcs.c
 # -lpthread may not be needed depending on how pcsc-lite was configured
 ifdef CONFIG_NATIVE_WINDOWS
