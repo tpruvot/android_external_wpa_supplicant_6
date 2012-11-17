@@ -1095,12 +1095,12 @@ wpa_supplicant_event_interface_status(struct wpa_supplicant *wpa_s,
 		}
 		break;
 	case EVENT_INTERFACE_REMOVED:
-		wpa_printf(MSG_DEBUG, "Configured interface was removed.");
+		wpa_printf(MSG_INFO, "Configured interface was removed.");
 		wpa_s->interface_removed = 1;
+		wpa_supplicant_set_state(wpa_s, WPA_INTERFACE_DISABLED);
 		wpa_supplicant_mark_disassoc(wpa_s);
 		l2_packet_deinit(wpa_s->l2);
 		wpa_s->l2 = NULL;
-		wpa_supplicant_set_state(wpa_s, WPA_INTERFACE_DISABLED);
 		break;
 	}
 }
